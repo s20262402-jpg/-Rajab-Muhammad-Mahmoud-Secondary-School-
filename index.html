@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> مدرسة رجب محمد محمود الثانوية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .dark-mode {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; transition: background 0.3s, color 0.3s; }
+        body { background: var(--bg-color); color: var(--text-color); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border-color); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow); }
+        .header-brand h1 { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 1.4rem; color: var(--text-color); cursor: pointer; padding: 8px; border-radius: 50%; background: var(--bg-color); }
+
+        .sidebar { position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: var(--card-bg); box-shadow: -5px 0 15px rgba(0,0,0,0.1); z-index: 2000; transition: 0.4s ease; padding: 20px; overflow-y: auto; }
+        .sidebar.active { right: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .close-sidebar { background: none; border: none; font-size: 1.5rem; color: var(--text-color); cursor: pointer; }
+        
+        .select-group { margin-bottom: 15px; }
+        .select-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
+        .select-group select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); font-size: 0.95rem; }
+
+        .menu-section { margin-top: 20px; background: var(--bg-color); padding: 15px; border-radius: 10px; }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
+        .overlay.active { display: block; }
+
+        /* Mandatory Notification Wall */
+        #notification-wall { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        .wall-card { background: var(--card-bg); padding: 30px; border-radius: 15px; max-width: 450px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .wall-card i { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
+        .wall-card h3 { margin-bottom: 10px; font-size: 1.4rem; color: var(--text-color); }
+        .wall-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; }
+
+        #urgent-banner { background: #dc2626; color: white; padding: 15px; text-align: center; font-weight: bold; display: none; position: relative; z-index: 1100; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+        .container { max-width: 700px; margin: 20px auto; padding: 0 15px; flex: 1; }
+        .hero-banner { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 20px; box-shadow: var(--shadow); }
+
+        .top-students-card, .question-card, .post-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .top-students-card { border: 2px solid #f59e0b; }
+        .question-card { border-right: 5px solid var(--primary); }
+        .question-header { display: flex; align-items: center; gap: 10px; color: var(--primary); margin-bottom: 12px; font-weight: bold; }
+
+        .top-students-header { display: flex; align-items: center; gap: 10px; color: #d97706; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .students-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; text-align: center; }
+        .student-item { background: var(--bg-color); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); }
+        .student-item img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #f59e0b; margin-bottom: 8px; }
+
+        .option-btn { width: 100%; text-align: right; padding: 10px 15px; margin-bottom: 8px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; color: var(--text-color); font-size: 1rem; }
+        .option-btn:hover { background: var(--primary); color: white; }
+
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 550px; background: var(--card-bg); padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 3000; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal.active { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
+        .modal h3 { color: var(--primary); margin-bottom: 15px; }
+        .modal-content-box { margin-bottom: 20px; max-height: 380px; overflow-y: auto; background: var(--bg-color); padding: 15px; border-radius: 8px; }
+        .schedule-img { width: 100%; border-radius: 8px; margin-top: 10px; }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-color); }
+
+        footer { text-align: center; padding: 15px; background: var(--card-bg); border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <!-- Mandatory Notification Wall (Blocks site until permission is granted) -->
+    <div id="notification-wall" style="display: none;">
+        <div class="wall-card">
+            <i class="fa-solid fa-bell-slash" id="wall-icon"></i>
+            <h3>تفعيل الإشعارات الإجباري</h3>
+            <p>لكي تتمكن من متابعة تنبيهات المدرسة العاجلة والجداول الدراسىة، يرجى النقر على الزر أدناه والسماح بالإشعارات.</p>
+            <button style="background:var(--primary); color:white; padding: 12px; border-radius:8px; width:100%; border:none; cursor:pointer; font-weight:bold;" onclick="requestMandatoryNotifications()">السماح بالإشعارات والدخول</button>
+        </div>
+    </div>
+
+    <div id="urgent-banner">
+        <i class="fa-solid fa-bullhorn"></i> <span id="urgent-text">تنبيه عاجل من إدارة المدرسة!</span>
+    </div>
+
+    <header>
+        <div class="header-brand">
+            <h1>مدرسة رجب محمد محمود الثانوية</h1>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="toggleDarkMode()"><i class="fa-solid fa-moon" id="dark-icon"></i></button>
+            <button class="icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </header>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>تحديد الصف والفصل</h3>
+            <button class="close-sidebar" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="select-group">
+            <label>الصف الدراسي:</label>
+            <select id="student-grade" onchange="updateClassOptions()">
+                <option value="">-- اختر الصف --</option>
+                <option value="1">الصف الأول الثانوي</option>
+                <option value="2">الصف الثاني الثانوي</option>
+                <option value="3">الصف الثالث الثانوي</option>
+            </select>
+        </div>
+
+        <div class="select-group">
+            <label>الفصل الدراسي:</label>
+            <select id="student-class" onchange="saveGradeAndClass()">
+                <option value="">-- اختر الفصل --</option>
+            </select>
+        </div>
+
+        <div class="menu-section">
+            <button style="width:100%; padding: 10px 0; margin-bottom: 10px; border:none; background:var(--primary); color:white; border-radius:8px; cursor:pointer;" onclick="openModal('schedule-modal')"><i class="fa-solid fa-calendar-days"></i> جدول الحصص</button>
+            <button style="width:100%; padding: 10px 0; border:none; background:var(--primary); color:white; border-radius:8px; cursor:pointer;" onclick="openModal('exam-modal')"><i class="fa-solid fa-file-lines"></i> جدول الامتحانات</button>
+        </div>
+    </div>
+
+    <div class="modal" id="schedule-modal">
+        <h3 id="schedule-title">جدول الحصص</h3>
+        <div class="modal-content-box" id="schedule-content">يرجى تحديد الصف والفصل من القائمة الجانبية أولاً.</div>
+        <button style="background:var(--primary); color:white; padding: 8px 15px; border-radius:5px; width:100%; border:none; cursor:pointer;" onclick="closeModal('schedule-modal')">إغلاق</button>
+    </div>
+
+    <div class="modal" id="exam-modal">
+        <h3 id="exam-title">جدول الامتحانات</h3>
+        <div class="modal-content-box" id="exam-content">لا توجد امتحانات معلنة حالياً.</div>
+        <button style="background:var(--primary); color:white; padding: 8px 15px; border-radius:5px; width:100%; border:none; cursor:pointer;" onclick="closeModal('exam-modal')">إغلاق</button>
+    </div>
+
+    <div class="modal" id="answer-modal">
+        <h3>إرسال إجابة السؤال</h3>
+        <div class="form-group">
+            <label>الاسم بالكامل:</label>
+            <input type="text" id="ans-student-name" placeholder="أدخل اسمك ثلاثي...">
+        </div>
+        <div class="form-group">
+            <label>الفصل (مثال: 1/1):</label>
+            <input type="text" id="ans-student-class" placeholder="1/1">
+        </div>
+        <div class="form-group" id="essay-answer-box" style="display:none;">
+            <label>كتابة الإجابة المقالية:</label>
+            <textarea id="ans-student-text" placeholder="اكتب إجابتك هنا..."></textarea>
+        </div>
+        <button style="background:var(--primary); color:white; padding: 10px; border-radius:8px; width:100%; border:none; cursor:pointer;" onclick="submitAnswerToAdmin()">إرسال الإجابة للإدارة</button>
+        <button style="background:#64748b; color:white; padding: 8px; border-radius:8px; width:100%; border:none; cursor:pointer; margin-top:8px;" onclick="closeModal('answer-modal')">إلغاء</button>
+    </div>
+
+    <div class="container">
+        <div class="hero-banner">
+            <h2>منصة طلاب مدرسة رجب محمد محمود</h2>
+            <p>تابع أحدث الأخبار، التنبيهات الرسمية، والجداول المدرسية أولاً بأول.</p>
+        </div>
+
+        <div class="top-students-card">
+            <div class="top-students-header">
+                <i class="fa-solid fa-award" style="font-size: 1.5rem;"></i>
+                <h3 style="font-size: 1.2rem;">لوحة الشرف - الطلاب المتفوقون</h3>
+            </div>
+            <div class="students-grid" id="top-students-grid"></div>
+        </div>
+
+        <div id="questions-container"></div>
+        <div id="posts-container"></div>
+    </div>
+
+    <footer>
+        إنشاء / حسام مصطفي عبدالرحمن عبدالله
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-messaging.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB1ER7DAKSD6sYanGQHcFgUeyg5pxBNLKc",
+            authDomain: "school-772e3.firebaseapp.com",
+            projectId: "school-772e3",
+            storageBucket: "school-772e3.firebasestorage.app",
+            messagingSenderId: "205626167545",
+            appId: "1:205626167545:web:ae14d4c4aa00878d5c5228"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const messaging = getMessaging(app);
+
+        let activeQuestionId = "";
+        let selectedChoice = "";
+        let isEssayQuestion = false;
+
+        // Check Notification Permission on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!('Notification' in window) || Notification.permission !== 'granted') {
+                document.getElementById('notification-wall').style.display = 'flex';
+            } else {
+                initializeMessagingToken();
+            }
+        });
+
+        window.requestMandatoryNotifications = async function() {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    document.getElementById('notification-wall').style.display = 'none';
+                    initializeMessagingToken();
+                } else {
+                    alert("عذراً، يجب السماح بالإشعارات للمتابعة واستخدام المنصة!");
+                }
+            } catch (e) {
+                alert("حدث خطأ أثناء طلب الإذن بالإشعارات.");
+            }
+        }
+
+        async function initializeMessagingToken() {
+            try {
+                const token = await getToken(messaging, { 
+                    vapidKey: 'BBP...ضع_مفتاح_VAPID_هنا' 
+                });
+                console.log("FCM Token:", token);
+            } catch (e) {
+                console.log("Error getting token:", e);
+            }
+        }
+
+        onMessage(messaging, (payload) => {
+            new Notification(payload.notification.title, {
+                body: payload.notification.body,
+                icon: 'https://cdn-icons-png.flaticon.com/512/2933/2933258.png'
+            });
+        });
+
+        window.toggleDarkMode = function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('dark-icon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        window.toggleSidebar = function() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        window.updateClassOptions = function() {
+            const grade = document.getElementById('student-grade').value;
+            const classSelect = document.getElementById('student-class');
+            classSelect.innerHTML = '<option value="">-- اختر الفصل --</option>';
+            if(!grade) return;
+
+            for(let i = 1; i <= 9; i++) {
+                const opt = document.createElement('option');
+                opt.value = `${i}/${grade}`;
+                opt.innerText = `فصل ${i}/${grade}`;
+                classSelect.appendChild(opt);
+            }
+        }
+
+        window.saveGradeAndClass = function() {
+            const grade = document.getElementById('student-grade').value;
+            const cls = document.getElementById('student-class').value;
+            if(grade && cls) {
+                localStorage.setItem('selectedGrade', grade);
+                localStorage.setItem('selectedClass', cls);
+                loadClassData();
+            }
+        }
+
+        window.openModal = function(modalId) {
+            if(modalId === 'schedule-modal' || modalId === 'exam-modal') toggleSidebar();
+            document.getElementById(modalId).classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        async function loadClassData() {
+            const grade = localStorage.getItem('selectedGrade');
+            const cls = localStorage.getItem('selectedClass');
+            if (!grade || !cls) return;
+
+            document.getElementById('schedule-title').innerText = `جدول حصص فصل (${cls})`;
+            document.getElementById('exam-title').innerText = `جدول امتحانات فصل (${cls})`;
+
+            const docId = `class_${cls.replace('/', '_')}`;
+            try {
+                const docSnap = await getDoc(doc(db, "schedules", docId));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    let scheduleHtml = data.schedule ? data.schedule.replace(/\n/g, '<br>') : "لم يتم إضافته بعد.";
+                    if(data.scheduleImg) scheduleHtml += `<br><a href="${data.scheduleImg}" target="_blank"><img src="${data.scheduleImg}" class="schedule-img"></a>`;
+                    document.getElementById('schedule-content').innerHTML = scheduleHtml;
+
+                    let examHtml = data.exams ? data.exams.replace(/\n/g, '<br>') : "لا توجد امتحانات معلنة حالياً.";
+                    if(data.examImg) examHtml += `<br><a href="${data.examImg}" target="_blank"><img src="${data.examImg}" class="schedule-img"></a>`;
+                    document.getElementById('exam-content').innerHTML = examHtml;
+                }
+            } catch(e) { console.log(e); }
+        }
+
+        window.prepareAnswer = function(qId, choice, isEssay) {
+            activeQuestionId = qId;
+            selectedChoice = choice;
+            isEssayQuestion = isEssay;
+
+            document.getElementById('essay-answer-box').style.display = isEssay ? 'block' : 'none';
+            openModal('answer-modal');
+        }
+
+        window.submitAnswerToAdmin = async function() {
+            const name = document.getElementById('ans-student-name').value;
+            const cls = document.getElementById('ans-student-class').value;
+            const textAns = document.getElementById('ans-student-text').value;
+
+            if(!name || !cls) { alert("يرجى إدخال اسمك وفصلك أولاً!"); return; }
+            if(isEssayQuestion && !textAns) { alert("يرجى كتابة الإجابة المقالية!"); return; }
+
+            try {
+                await addDoc(collection(db, "student_answers"), {
+                    questionId: activeQuestionId,
+                    studentName: name,
+                    studentClass: cls,
+                    answer: isEssayQuestion ? textAns : selectedChoice,
+                    timestamp: serverTimestamp()
+                });
+                alert("تم إرسال إجابتك للإدارة بنجاح!");
+                closeModal('answer-modal');
+                document.getElementById('ans-student-name').value = "";
+                document.getElementById('ans-student-class').value = "";
+                document.getElementById('ans-student-text').value = "";
+            } catch(e) { alert("حدث خطأ: " + e.message); }
+        }
+
+        onSnapshot(collection(db, "questions"), (snapshot) => {
+            const qContainer = document.getElementById('questions-container');
+            qContainer.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+                const qData = docSnap.data();
+                const qId = docSnap.id;
+                const card = document.createElement('div');
+                card.className = 'question-card';
+
+                let bodyHtml = `<div class="question-header"><i class="fa-solid fa-circle-question"></i> سؤال تفاعلي (${qData.type === 'mcq' ? 'اختياري' : 'مقالي'})</div><p style="font-size:1.1rem; margin-bottom:15px;">${qData.question}</p>`;
+
+                if(qData.type === 'mcq') {
+                    qData.options.forEach((opt) => {
+                        bodyHtml += `<button class="option-btn" onclick="prepareAnswer('${qId}', '${opt}', false)"><i class="fa-regular fa-circle"></i> ${opt}</button>`;
+                    });
+                } else {
+                    bodyHtml += `<button style="background:var(--primary); color:white; padding:10px; border-radius:8px; border:none; cursor:pointer; width:100%; font-weight:bold;" onclick="prepareAnswer('${qId}', '', true)">إجابة على السؤال المقالي</button>`;
+                }
+
+                card.innerHTML = bodyHtml;
+                qContainer.appendChild(card);
+            });
+        });
+
+        onSnapshot(collection(db, "top_students"), (snapshot) => {
+            const grid = document.getElementById('top-students-grid');
+            grid.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+                const st = docSnap.data();
+                const defaultImg = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                const item = document.createElement('div');
+                item.className = 'student-item';
+                item.innerHTML = `<img src="${st.image || defaultImg}"><h5>${st.name}</h5><span>فصل ${st.class}</span>`;
+                grid.appendChild(item);
+            });
+        });
+
+        onSnapshot(doc(db, "alerts", "current"), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if (data.active && data.message) {
+                    document.getElementById('urgent-text').innerText = data.message;
+                    document.getElementById('urgent-banner').style.display = 'block';
+                } else { document.getElementById('urgent-banner').style.display = 'none'; }
+            }
+        });
+
+        const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+                const post = docSnap.data();
+                let imageHtml = post.image ? `<img src="${post.image}" class="post-image">` : '';
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                card.innerHTML = `<div class="post-header"><div class="post-avatar">إ</div><div class="post-info"><h4>إدارة المدرسة</h4><span>مستند رسمي</span></div></div><div class="post-content">${post.text}</div>${imageHtml}`;
+                container.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
